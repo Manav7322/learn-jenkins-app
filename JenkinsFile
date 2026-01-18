@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     stages {
         stage('build') {
             agent {
@@ -8,15 +9,15 @@ pipeline {
                     reuseNode true
                 }
             }
+
             steps {
                 sh '''
-                    node -v
-                    npm -v
-                    npm install -g npm@9
-                    npm -v
-                    npm ci
-                    npm run build
                     ls -la
+                    node --version
+                    npm --version
+
+                    npm install --legacy-peer-deps
+                    npm run build
                 '''
             }
         }
