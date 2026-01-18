@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        CI = 'true'
+        PATH = "${env.PATH}:${env.WORKSPACE}/node_modules/.bin"
+    }
+
     stages {
         stage('build') {
             agent {
@@ -13,6 +18,9 @@ pipeline {
             steps {
                 sh '''
                     set -e
+
+                    echo "Workspace: $WORKSPACE"
+                    echo "PATH: $PATH"
 
                     ls -la
                     node --version
