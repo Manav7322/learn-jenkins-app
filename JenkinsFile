@@ -1,33 +1,26 @@
 pipeline {
     agent any
-
-    environment {
-        CI = 'true'
-        PATH = "${env.PATH}:${env.WORKSPACE}/node_modules/.bin"
-    }
-
     stages {
         stage('build') {
             agent {
                 docker {
-                    image 'node:18'
+                    image 'node:18-alpine'
                     reuseNode true
                 }
             }
-
             steps {
                 sh '''
-                    set -e
-
-                    echo "Workspace: $WORKSPACE"
-                    echo "PATH: $PATH"
-
-                    ls -la
+                    # Check versions
                     node --version
                     npm --version
 
-                    rm -rf node_modules
+                    # Downgrade npm to v9 to avoid the exit handler bug
+                    npm install -g npm@9
+
+                    # Install dependencies
                     npm ci
+
+                    # Run your build
                     npm run build
                 '''
             }
