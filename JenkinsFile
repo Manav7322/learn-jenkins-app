@@ -4,24 +4,20 @@ pipeline {
         stage('build') {
             agent {
                 docker {
-                    image 'node:18-alpine'
+                    image 'node:18.17.1-bullseye-slim'
                     reuseNode true
                 }
             }
             steps {
                 sh '''
+                    ls -la
                     # Check versions
                     node --version
                     npm --version
-
-                    # Downgrade npm to v9 to avoid the exit handler bug
-                    npm install -g npm@9
-
-                    # Install dependencies
                     npm ci
-
                     # Run your build
                     npm run build
+                    ls -la
                 '''
             }
         }
